@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { clearStoredUser, getServerStoredUserSnapshot, getStoredUserSnapshot, subscribeStoredUser } from "@/lib/user";
 
-type NavSection = "biblioteca" | "salon" | "auth";
+type NavSection = "home" | "biblioteca" | "salon" | "auth";
 
 export default function Nav() {
   const pathname = usePathname();
@@ -14,7 +14,8 @@ export default function Nav() {
   const user = useSyncExternalStore(subscribeStoredUser, getStoredUserSnapshot, getServerStoredUserSnapshot);
 
   const isActive = (section: NavSection) => {
-    if (section === "biblioteca") return pathname === "/" || pathname.startsWith("/juegos");
+    if (section === "home") return pathname === "/";
+    if (section === "biblioteca") return pathname.startsWith("/biblioteca") || pathname.startsWith("/juegos");
     if (section === "salon") return pathname === "/salon";
     return pathname === "/login";
   };
@@ -36,7 +37,10 @@ export default function Nav() {
           </div>
         </Link>
         <div className="links">
-          <Link href="/" className={isActive("biblioteca") ? "active" : ""}>
+          <Link href="/" className={isActive("home") ? "active" : ""}>
+            Inicio
+          </Link>
+          <Link href="/biblioteca" className={isActive("biblioteca") ? "active" : ""}>
             Biblioteca
           </Link>
           <Link href="/salon" className={isActive("salon") ? "active" : ""}>
@@ -67,7 +71,10 @@ export default function Nav() {
         <div className="pixel neon-cyan" style={{ fontSize: 11, marginBottom: 16 }}>
           MENÚ
         </div>
-        <Link href="/" className={isActive("biblioteca") ? "active" : ""} onClick={close}>
+        <Link href="/" className={isActive("home") ? "active" : ""} onClick={close}>
+          Inicio
+        </Link>
+        <Link href="/biblioteca" className={isActive("biblioteca") ? "active" : ""} onClick={close}>
           Biblioteca
         </Link>
         <Link href="/salon" className={isActive("salon") ? "active" : ""} onClick={close}>
