@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { clearStoredUser, getServerStoredUserSnapshot, getStoredUserSnapshot, subscribeStoredUser } from "@/lib/user";
 
-type NavSection = "home" | "biblioteca" | "salon" | "auth";
+type NavSection = "home" | "biblioteca" | "salon" | "about" | "auth";
 
 export default function Nav() {
   const pathname = usePathname();
@@ -17,6 +17,7 @@ export default function Nav() {
     if (section === "home") return pathname === "/";
     if (section === "biblioteca") return pathname.startsWith("/biblioteca") || pathname.startsWith("/juegos");
     if (section === "salon") return pathname === "/salon";
+    if (section === "about") return pathname === "/about";
     return pathname === "/login";
   };
 
@@ -45,6 +46,9 @@ export default function Nav() {
           </Link>
           <Link href="/salon" className={isActive("salon") ? "active" : ""}>
             Salón de la Fama
+          </Link>
+          <Link href="/about" className={isActive("about") ? "active" : ""}>
+            Acerca de
           </Link>
         </div>
         <div className="spacer"></div>
@@ -79,6 +83,9 @@ export default function Nav() {
         </Link>
         <Link href="/salon" className={isActive("salon") ? "active" : ""} onClick={close}>
           Salón de la Fama
+        </Link>
+        <Link href="/about" className={isActive("about") ? "active" : ""} onClick={close}>
+          Acerca de
         </Link>
         <Link href="/login" className={isActive("auth") ? "active" : ""} onClick={close}>
           {user ? "Cuenta" : "Iniciar Sesión"}
