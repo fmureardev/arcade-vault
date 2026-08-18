@@ -46,7 +46,10 @@ export default function GameCard({ game }: { game: Game }) {
             <b>{game.best.toLocaleString("es-ES")}</b>
           </div>
           <button
-            className={"btn " + (game.color === "magenta" ? "magenta" : game.color === "yellow" ? "yellow" : "")}
+            className={
+              "btn " +
+              (game.color === "magenta" ? "magenta" : game.color === "yellow" ? "yellow" : "")
+            }
             onClick={(e) => {
               e.stopPropagation();
               goToDetail();

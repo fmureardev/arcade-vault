@@ -28,7 +28,10 @@ export async function POST(request: Request) {
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    return Response.json({ ok: false, error: "El servicio de contacto no está configurado." }, { status: 500 });
+    return Response.json(
+      { ok: false, error: "El servicio de contacto no está configurado." },
+      { status: 500 }
+    );
   }
 
   const { name, email, msg } = body;

@@ -124,11 +124,11 @@ Claves de `localStorage` (idénticas al template):
 
 ## Risks
 
-| Riesgo | Mitigación |
-| --- | --- |
+| Riesgo                                                                                                                       | Mitigación                                                                                                                                                                       |
+| ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | El CSS del template usa selectores globales (`.card`, `.btn`, etc.) que podrían chocar con clases utilitarias de Tailwind v4 | Cargar `styles.css` después de `@import "tailwindcss"` en `globals.css`; si aparecen colisiones de nombres, se resuelven prefijando o revisando en el paso 5 antes de continuar. |
-| `localStorage` no disponible (SSR o modo privado estricto) | Todas las lecturas/escrituras ya están en componentes `"use client"` y envueltas en try/catch, igual que el template; si falla, la app sigue funcionando sin persistencia. |
-| Tipar `GAMES`/`seededScores` en TS puede exponer inconsistencias no visibles en el `.jsx` original | Revisar tipos contra el uso real en cada pantalla portada durante los pasos 7–11. |
+| `localStorage` no disponible (SSR o modo privado estricto)                                                                   | Todas las lecturas/escrituras ya están en componentes `"use client"` y envueltas en try/catch, igual que el template; si falla, la app sigue funcionando sin persistencia.       |
+| Tipar `GAMES`/`seededScores` en TS puede exponer inconsistencias no visibles en el `.jsx` original                           | Revisar tipos contra el uso real en cada pantalla portada durante los pasos 7–11.                                                                                                |
 
 ## What is **not** in this spec
 

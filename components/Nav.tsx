@@ -3,7 +3,12 @@
 import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { clearStoredUser, getServerStoredUserSnapshot, getStoredUserSnapshot, subscribeStoredUser } from "@/lib/user";
+import {
+  clearStoredUser,
+  getServerStoredUserSnapshot,
+  getStoredUserSnapshot,
+  subscribeStoredUser,
+} from "@/lib/user";
 
 type NavSection = "home" | "biblioteca" | "salon" | "about" | "auth";
 
@@ -11,11 +16,16 @@ export default function Nav() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const user = useSyncExternalStore(subscribeStoredUser, getStoredUserSnapshot, getServerStoredUserSnapshot);
+  const user = useSyncExternalStore(
+    subscribeStoredUser,
+    getStoredUserSnapshot,
+    getServerStoredUserSnapshot
+  );
 
   const isActive = (section: NavSection) => {
     if (section === "home") return pathname === "/";
-    if (section === "biblioteca") return pathname.startsWith("/biblioteca") || pathname.startsWith("/juegos");
+    if (section === "biblioteca")
+      return pathname.startsWith("/biblioteca") || pathname.startsWith("/juegos");
     if (section === "salon") return pathname === "/salon";
     if (section === "about") return pathname === "/about";
     return pathname === "/login";
@@ -91,7 +101,10 @@ export default function Nav() {
           {user ? "Cuenta" : "Iniciar Sesión"}
         </Link>
         <div style={{ flex: 1 }}></div>
-        <div className="pixel" style={{ fontSize: 9, color: "var(--ink-faint)", letterSpacing: "0.16em" }}>
+        <div
+          className="pixel"
+          style={{ fontSize: 9, color: "var(--ink-faint)", letterSpacing: "0.16em" }}
+        >
           CRÉDITOS · 03
         </div>
       </aside>

@@ -88,12 +88,12 @@ No se introduce ningún modelo de datos persistente ni tipo en `lib/types.ts`. S
 
 ## Risks
 
-| Riesgo | Mitigación |
-| --- | --- |
-| Sin `RESEND_API_KEY` configurada (o inválida), el envío fallará siempre en desarrollo local | El Route Handler valida la presencia de la variable y devuelve un error claro (500) en vez de lanzar una excepción sin manejar; se documenta en `.env.example` y en la verificación manual del paso 7. |
-| El dominio de pruebas `onboarding@resend.dev` de Resend puede tener límites de envío o marcarse como spam en algunos proveedores de correo | Aceptable para el MVP; si se convierte en problema real, se aborda en una spec futura de verificación de dominio propio. |
+| Riesgo                                                                                                                                          | Mitigación                                                                                                                                                                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sin `RESEND_API_KEY` configurada (o inválida), el envío fallará siempre en desarrollo local                                                     | El Route Handler valida la presencia de la variable y devuelve un error claro (500) en vez de lanzar una excepción sin manejar; se documenta en `.env.example` y en la verificación manual del paso 7.                                       |
+| El dominio de pruebas `onboarding@resend.dev` de Resend puede tener límites de envío o marcarse como spam en algunos proveedores de correo      | Aceptable para el MVP; si se convierte en problema real, se aborda en una spec futura de verificación de dominio propio.                                                                                                                     |
 | Selectores CSS nuevos (`.about-*`, `.contact-*`, `.terminal-success`, etc.) podrían chocar por nombre con clases ya existentes en `globals.css` | Antes de copiar, verificar que ninguno de los nombres de clase listados en Scope ya existe en `globals.css` (confirmado sin colisiones al momento de escribir esta spec); si aparece alguna en el futuro, resolver renombrando en el paso 5. |
-| La clase de error del formulario no existe en el template original, así que su estilo no está definido en `styles.css` | Se diseña como una variante mínima reutilizando tokens ya existentes (`--red`/`--magenta` según lo que tenga `globals.css`), sin inventar un nuevo sistema visual — a resolver en el paso 5 de implementación. |
+| La clase de error del formulario no existe en el template original, así que su estilo no está definido en `styles.css`                          | Se diseña como una variante mínima reutilizando tokens ya existentes (`--red`/`--magenta` según lo que tenga `globals.css`), sin inventar un nuevo sistema visual — a resolver en el paso 5 de implementación.                               |
 
 ## What is **not** in this spec
 

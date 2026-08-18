@@ -10,7 +10,11 @@ function App() {
     return { name: "biblioteca" };
   });
   const [user, setUser] = useStateApp(() => {
-    try { return JSON.parse(localStorage.getItem("av_user") || "null"); } catch (e) { return null; }
+    try {
+      return JSON.parse(localStorage.getItem("av_user") || "null");
+    } catch (e) {
+      return null;
+    }
   });
 
   useEffectApp(() => {
@@ -19,8 +23,14 @@ function App() {
   }, [route]);
 
   const navigate = (r) => setRoute(r);
-  const handleLogin = (u) => { setUser(u); localStorage.setItem("av_user", JSON.stringify(u)); };
-  const handleSignOut = () => { setUser(null); localStorage.removeItem("av_user"); };
+  const handleLogin = (u) => {
+    setUser(u);
+    localStorage.setItem("av_user", JSON.stringify(u));
+  };
+  const handleSignOut = () => {
+    setUser(null);
+    localStorage.removeItem("av_user");
+  };
   const handleSaveScore = (entry) => {
     try {
       const all = JSON.parse(localStorage.getItem("av_scores") || "[]");
@@ -32,7 +42,10 @@ function App() {
   let screen = null;
   if (route.name === "biblioteca") screen = <Library navigate={navigate} />;
   else if (route.name === "detalle") screen = <GameDetail id={route.id} navigate={navigate} />;
-  else if (route.name === "player") screen = <GamePlayer id={route.id} user={user} navigate={navigate} onSaveScore={handleSaveScore} />;
+  else if (route.name === "player")
+    screen = (
+      <GamePlayer id={route.id} user={user} navigate={navigate} onSaveScore={handleSaveScore} />
+    );
   else if (route.name === "auth") screen = <Auth navigate={navigate} onLogin={handleLogin} />;
   else if (route.name === "salon") screen = <HallOfFame user={user} navigate={navigate} />;
 
@@ -40,7 +53,17 @@ function App() {
     <React.Fragment>
       <Nav route={route} navigate={navigate} user={user} onSignOut={handleSignOut} />
       <main className="av-main">{screen}</main>
-      <footer style={{ borderTop: "1px solid var(--line)", padding: "20px 32px", textAlign: "center", color: "var(--ink-faint)", fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.16em" }}>
+      <footer
+        style={{
+          borderTop: "1px solid var(--line)",
+          padding: "20px 32px",
+          textAlign: "center",
+          color: "var(--ink-faint)",
+          fontFamily: "var(--mono)",
+          fontSize: 11,
+          letterSpacing: "0.16em",
+        }}
+      >
         © 2026 ARCADE VAULT · HECHO CON PIXELES Y NEÓN · v2.6.0
       </footer>
     </React.Fragment>

@@ -140,15 +140,19 @@ export default function About() {
         <div className="kicker pixel neon-yellow">▸ ACERCA DE</div>
         <h1 className="about-title">ACERCA DE ARCADE VAULT</h1>
         <p className="about-mission">
-          ARCADE VAULT nació del amor por los videojuegos clásicos. Nuestra misión es preservar y celebrar
-          los arcades que definieron una generación, haciéndolos accesibles para todos, en cualquier lugar
-          y sin costo.
+          ARCADE VAULT nació del amor por los videojuegos clásicos. Nuestra misión es preservar y
+          celebrar los arcades que definieron una generación, haciéndolos accesibles para todos, en
+          cualquier lugar y sin costo.
         </p>
 
         <div className="highlight-row">
           {[
             { i: "HEART" as const, t: "HECHO CON ❤️ PARA JUGADORES", c: "magenta" },
-            { i: "BROWSER" as const, t: "JUEGOS EN HTML — CORREN EN CUALQUIER NAVEGADOR", c: "cyan" },
+            {
+              i: "BROWSER" as const,
+              t: "JUEGOS EN HTML — CORREN EN CUALQUIER NAVEGADOR",
+              c: "cyan",
+            },
             { i: "PLANT" as const, t: "PROYECTO EN CONSTANTE CRECIMIENTO", c: "green" },
           ].map((h, i) => (
             <div key={i} className={"highlight " + h.c} style={{ transitionDelay: i * 80 + "ms" }}>
@@ -226,7 +230,12 @@ export default function About() {
                   ></textarea>
                 </div>
                 {status === "error" && <div className="contact-error">⚠ {errorMsg}</div>}
-                <button className="btn xl press" type="submit" style={{ width: "100%" }} disabled={status === "loading"}>
+                <button
+                  className="btn xl press"
+                  type="submit"
+                  style={{ width: "100%" }}
+                  disabled={status === "loading"}
+                >
                   {status === "loading" ? "ENVIANDO…" : "▶  ENVIAR MENSAJE"}
                 </button>
               </>
@@ -246,8 +255,8 @@ export default function About() {
                   <div className="line dim">[OK] Validando contenido…</div>
                   <div className="line dim">[OK] Transmitiendo paquete…</div>
                   <div className="line success">
-                    &gt; MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, {sentName.toUpperCase()}.
-                    <span className="caret">_</span>
+                    &gt; MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS,{" "}
+                    {sentName.toUpperCase()}.<span className="caret">_</span>
                   </div>
                   <div style={{ marginTop: 18 }}>
                     <button className="btn ghost" type="button" onClick={resetForm}>

@@ -11,6 +11,7 @@ Arcade Vault — a platform for playing games online and competing for high scor
 The project follows **Spec Driven Design** via the `/spec` and `/spec-impl` skills from the `Klerith/fernando-skills` skill pack (installed with `npx skills@latest add Klerith/fernando-skills`). If a feature spec exists, prefer running the spec workflow over ad-hoc implementation.
 
 ## Skills
+
 Usa siempre /frontend-design para diseñar la interfaz del usuario.
 
 ## Stack notes

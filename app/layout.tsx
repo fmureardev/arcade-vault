@@ -22,10 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="es"
-      className={`${pressStart2P.variable} ${jetBrainsMono.variable} h-full`}
-    >
+    <html lang="es" className={`${pressStart2P.variable} ${jetBrainsMono.variable} h-full`}>
       <body>
         <div className="av-bg" />
         <div className="av-noise" />

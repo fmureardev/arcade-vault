@@ -3,10 +3,19 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import type { Game } from "@/lib/types";
-import { getServerStoredUserSnapshot, getStoredUserSnapshot, saveScore, subscribeStoredUser } from "@/lib/user";
+import {
+  getServerStoredUserSnapshot,
+  getStoredUserSnapshot,
+  saveScore,
+  subscribeStoredUser,
+} from "@/lib/user";
 
 export default function GamePlayer({ game }: { game: Game }) {
-  const user = useSyncExternalStore(subscribeStoredUser, getStoredUserSnapshot, getServerStoredUserSnapshot);
+  const user = useSyncExternalStore(
+    subscribeStoredUser,
+    getStoredUserSnapshot,
+    getServerStoredUserSnapshot
+  );
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
   const level = 1 + Math.floor(score / 2500);
@@ -82,7 +91,15 @@ export default function GamePlayer({ game }: { game: Game }) {
                 <div className="pixel neon-yellow" style={{ fontSize: 22 }}>
                   EN PAUSA
                 </div>
-                <div className="mono" style={{ fontSize: 11, color: "var(--ink-dim)", marginTop: 10, letterSpacing: "0.16em" }}>
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 11,
+                    color: "var(--ink-dim)",
+                    marginTop: 10,
+                    letterSpacing: "0.16em",
+                  }}
+                >
                   PULSA REANUDAR PARA CONTINUAR
                 </div>
               </div>
