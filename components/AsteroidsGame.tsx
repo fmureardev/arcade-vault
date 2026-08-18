@@ -547,7 +547,7 @@ export default function AsteroidsGame() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        zIndex: 10,
+        zIndex: 100,
       }}
     >
       <Link
