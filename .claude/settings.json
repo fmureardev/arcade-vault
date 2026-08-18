@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "statusMessage": "Formateando archivo con Prettier y ESLint...",
+            "command": "f=$(jq -r '.tool_input.file_path'); if [ -n \"$f\" ]; then ./node_modules/.bin/prettier --write \"$f\"; ext=\"${f##*.}\"; if [[ \"$ext\" =~ ^(js|jsx|ts|tsx|mjs|cjs)$ ]]; then ./node_modules/.bin/eslint --fix \"$f\"; fi; fi 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}

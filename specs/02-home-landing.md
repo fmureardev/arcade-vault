@@ -79,11 +79,11 @@ No se introduce ningún modelo de datos nuevo. Home reutiliza `GAMES` de `lib/da
 
 ## Risks
 
-| Riesgo | Mitigación |
-| --- | --- |
+| Riesgo                                                                                                                                        | Mitigación                                                                                                                                                                                                        |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Selectores CSS del `home-about/styles.css` (más nuevo) podrían chocar por nombre con clases ya existentes en `globals.css` de otras pantallas | Antes de copiar, verificar que ninguno de los nombres de clase listados en Scope ya existe en `globals.css`; si hay colisión de nombre con significado distinto, resolver renombrando o namespacing en el paso 4. |
-| Mover `app/page.tsx` a `app/biblioteca/page.tsx` puede dejar imports rotos o referencias a `/` que asumían la Biblioteca | Revisar explícitamente el paso 6 del plan de implementación antes de dar la spec por completada. |
-| El `IntersectionObserver` de `useReveal` no es compatible con SSR (usa `document`) | El componente Home es `"use client"` y el hook se ejecuta dentro de `useEffect`, que solo corre en cliente — mismo patrón ya usado en otras pantallas portadas en spec 01. |
+| Mover `app/page.tsx` a `app/biblioteca/page.tsx` puede dejar imports rotos o referencias a `/` que asumían la Biblioteca                      | Revisar explícitamente el paso 6 del plan de implementación antes de dar la spec por completada.                                                                                                                  |
+| El `IntersectionObserver` de `useReveal` no es compatible con SSR (usa `document`)                                                            | El componente Home es `"use client"` y el hook se ejecuta dentro de `useEffect`, que solo corre en cliente — mismo patrón ya usado en otras pantallas portadas en spec 01.                                        |
 
 ## What is **not** in this spec
 
