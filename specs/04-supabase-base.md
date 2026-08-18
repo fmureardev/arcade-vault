@@ -1,6 +1,6 @@
 # SPEC 04 — Configuración base de Supabase
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 03
 > **Date:** 2026-08-18
 > **Objective:** Instalar y configurar el cliente de Supabase (`@supabase/ssr`) en el proyecto Next.js, creando los helpers de cliente/servidor/middleware y generando los tipos TypeScript, sin conectar ninguna pantalla ni crear tablas de datos todavía.
