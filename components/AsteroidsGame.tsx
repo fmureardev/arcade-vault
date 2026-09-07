@@ -1,10 +1,31 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import {
+  getServerStoredUserSnapshot,
+  getStoredUserSnapshot,
+  saveScore,
+  subscribeStoredUser,
+} from "@/lib/user";
 
 export default function AsteroidsGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const user = useSyncExternalStore(
+    subscribeStoredUser,
+    getStoredUserSnapshot,
+    getServerStoredUserSnapshot
+  );
+
+  const [score, setScore] = useState(0);
+  const [lives, setLives] = useState(3);
+  const [level, setLevel] = useState(1);
+  const [over, setOver] = useState(false);
+  const [customName, setCustomName] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+  const name = customName ?? user?.name ?? "INVITADO";
+
+  const restartRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -338,6 +359,10 @@ export default function AsteroidsGame() {
     let deadTimer: number;
     let powerUpSpawned: boolean;
     let killsSinceSpawn: number;
+    let lastSyncedScore = -1;
+    let lastSyncedLives = -1;
+    let lastSyncedLevel = -1;
+    let gameOverNotified = false;
 
     function spawnAsteroids(count: number) {
       const SAFE_DIST = 130;
@@ -364,7 +389,20 @@ export default function AsteroidsGame() {
       level = 1;
       state = "playing";
       spawnAsteroids(4);
+      lastSyncedScore = -1;
+      lastSyncedLives = -1;
+      lastSyncedLevel = -1;
+      gameOverNotified = false;
     }
+
+    restartRef.current = () => {
+      setScore(0);
+      setLives(3);
+      setLevel(1);
+      setSaved(false);
+      setOver(false);
+      initGame();
+    };
 
     function nextLevel() {
       level++;
@@ -396,7 +434,10 @@ export default function AsteroidsGame() {
     // ── Update ─────────────────────────────────────────────────────────────────
     function update(dt: number) {
       if (state === "gameover") {
-        if (pressed("Space")) initGame();
+        if (!gameOverNotified) {
+          gameOverNotified = true;
+          setOver(true);
+        }
         particles.forEach((p) => p.update(dt));
         particles = particles.filter((p) => !p.dead);
         return;
@@ -458,49 +499,29 @@ export default function AsteroidsGame() {
         }
       }
       if (asteroids.length === 0) nextLevel();
-    }
 
-    // ── Draw ───────────────────────────────────────────────────────────────────
-    function drawLifeIcon(x: number, y: number) {
-      ctx!.save();
-      ctx!.translate(x, y);
-      ctx!.rotate(-Math.PI / 2);
-      ctx!.strokeStyle = "#fff";
-      ctx!.lineWidth = 1.2;
-      ctx!.lineJoin = "round";
-      ctx!.beginPath();
-      ctx!.moveTo(9, 0);
-      ctx!.lineTo(-6, -5);
-      ctx!.lineTo(-3, 0);
-      ctx!.lineTo(-6, 5);
-      ctx!.closePath();
-      ctx!.stroke();
-      ctx!.restore();
-    }
-
-    function drawHUD() {
-      ctx!.fillStyle = "#fff";
-      ctx!.font = "15px monospace";
-      ctx!.textAlign = "left";
-      ctx!.fillText(`SCORE  ${score}`, 14, 26);
-      ctx!.textAlign = "center";
-      ctx!.fillText(`NIVEL ${level}`, W / 2, 26);
-      for (let i = 0; i < lives; i++) drawLifeIcon(W - 16 - i * 22, 18);
-      if (ship.tripleShot > 0) {
-        ctx!.textAlign = "left";
-        ctx!.fillStyle = "#0ff";
-        ctx!.fillText(`3x  ${ship.tripleShot.toFixed(1)}s`, 14, 46);
+      if (score !== lastSyncedScore) {
+        lastSyncedScore = score;
+        setScore(score);
+      }
+      if (lives !== lastSyncedLives) {
+        lastSyncedLives = lives;
+        setLives(lives);
+      }
+      if (level !== lastSyncedLevel) {
+        lastSyncedLevel = level;
+        setLevel(level);
       }
     }
 
-    function drawOverlay(title: string, sub: string) {
-      ctx!.textAlign = "center";
-      ctx!.fillStyle = "#fff";
-      ctx!.font = "bold 46px monospace";
-      ctx!.fillText(title, W / 2, H / 2 - 18);
-      ctx!.font = "18px monospace";
-      ctx!.fillStyle = "rgba(255,255,255,0.65)";
-      ctx!.fillText(sub, W / 2, H / 2 + 22);
+    // ── Draw ───────────────────────────────────────────────────────────────────
+    function drawHUD() {
+      if (ship.tripleShot > 0) {
+        ctx!.textAlign = "left";
+        ctx!.fillStyle = "#0ff";
+        ctx!.font = "15px monospace";
+        ctx!.fillText(`3x  ${ship.tripleShot.toFixed(1)}s`, 14, 26);
+      }
     }
 
     function draw() {
@@ -512,8 +533,6 @@ export default function AsteroidsGame() {
       bullets.forEach((b) => b.draw());
       ship.draw();
       drawHUD();
-      if (state === "gameover")
-        drawOverlay("GAME OVER", `PUNTAJE: ${score}   —   ESPACIO PARA REINICIAR`);
     }
 
     // ── Loop ───────────────────────────────────────────────────────────────────
@@ -539,25 +558,88 @@ export default function AsteroidsGame() {
   }, []);
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "#000",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 100,
-      }}
-    >
-      <Link
-        href="/juegos/asteroids"
-        className="btn ghost"
-        style={{ position: "absolute", top: 16, left: 16 }}
-      >
-        ← VOLVER
-      </Link>
-      <canvas ref={canvasRef} width={800} height={600} />
+    <div className="av-player fade-in">
+      <div className="player-hud">
+        <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+          <div className="hud-stat">
+            <div className="l">Jugador</div>
+            <div className="v" style={{ color: "var(--ink)" }}>
+              {name}
+            </div>
+          </div>
+          <div className="hud-stat">
+            <div className="l">Puntuación</div>
+            <div className="v">{score.toLocaleString("es-ES")}</div>
+          </div>
+          <div className="hud-stat lives">
+            <div className="l">Vidas</div>
+            <div className="v">{"♥ ".repeat(lives).trim() || "—"}</div>
+          </div>
+          <div className="hud-stat level">
+            <div className="l">Nivel</div>
+            <div className="v">{String(level).padStart(2, "0")}</div>
+          </div>
+        </div>
+        <div className="hud-actions">
+          <Link href="/juegos/asteroids" className="btn ghost">
+            SALIR
+          </Link>
+        </div>
+      </div>
+
+      <div className="crt">
+        <div className="crt-screen">
+          <canvas
+            ref={canvasRef}
+            width={800}
+            height={600}
+            style={{ width: "100%", height: "100%", display: "block" }}
+          />
+        </div>
+        <div className="crt-bottom">
+          <span className="led">SEÑAL OK</span>
+          <span>ASTEROIDS · CRT-83 · 60 HZ</span>
+          <span>CARGA · 1MB</span>
+        </div>
+      </div>
+
+      {over && (
+        <div className="modal-bd">
+          <div className="modal">
+            <h2>FIN DEL JUEGO</h2>
+            <div className="final-label">PUNTUACIÓN FINAL</div>
+            <div className="final">{score.toLocaleString("es-ES")}</div>
+            {!saved ? (
+              <div className="input-row">
+                <input
+                  value={name}
+                  onChange={(e) => setCustomName(e.target.value.toUpperCase().slice(0, 10))}
+                  placeholder="TUS INICIALES"
+                />
+                <button
+                  className="btn yellow"
+                  onClick={() => {
+                    saveScore({ game: "asteroids", score, name });
+                    setSaved(true);
+                  }}
+                >
+                  GUARDAR PUNTUACIÓN
+                </button>
+              </div>
+            ) : (
+              <div className="toast-saved">▸ PUNTUACIÓN GUARDADA_</div>
+            )}
+            <div className="actions">
+              <button className="btn" onClick={() => restartRef.current()}>
+                JUGAR DE NUEVO
+              </button>
+              <Link href="/" className="btn magenta">
+                VOLVER AL VAULT
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
